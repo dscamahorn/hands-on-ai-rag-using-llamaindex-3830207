@@ -11,14 +11,20 @@ from llama_index.core.query_pipeline import QueryPipeline
 from llama_index.core.settings import Settings
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.embeddings.cohere import CohereEmbedding
-from llama_index.embeddings.openai import OpenAIEmbedding
+#from llama_index.embeddings.openai import OpenAIEmbedding
 
-from llama_index.embeddings.fastembed import FastEmbedEmbedding
+#from llama_index.embeddings.fastembed import FastEmbedEmbedding
 from llama_index.llms.cohere import Cohere
-from llama_index.llms.openai import OpenAI
-from llama_index.llms.mistralai import MistralAI
+#from llama_index.llms.openai import OpenAI
+#from llama_index.llms.mistralai import MistralAI
 
 from llama_index.vector_stores.qdrant import QdrantVectorStore
+
+import os
+
+CO_API_KEY = os.environ['CO_API_KEY'] or getpass("Enter your Cohere API key: ")
+Settings.llm = Cohere(model="command-r-plus", api_key=CO_API_KEY)
+Settings.embed_model = CohereEmbedding(model_name="embed-english-v3.0", api_key=CO_API_KEY)
 
 def setup_llm(provider, model, api_key, **kwargs):
     """
