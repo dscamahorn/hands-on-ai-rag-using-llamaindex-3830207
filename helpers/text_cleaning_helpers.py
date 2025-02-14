@@ -112,6 +112,33 @@ def group_broken_paragraphs(
 
     return "\n\n".join(clean_paragraphs)
 
+def group_bullet_paragraph(paragraph: str) -> list:
+    """Groups paragraphs with bullets that have line breaks for visual/formatting purposes.
+    For example:
+
+    '''○ The big red fox
+    is walking down the lane.
+
+    ○ At the end of the lane
+    the fox met a friendly bear.'''
+
+    Gets converted to
+
+    '''○ The big red fox is walking down the lane.
+    ○ At the end of the land the fox met a bear.'''
+    """
+    clean_paragraphs = []
+    # pytesseract converts some bullet points to standalone "e" characters.
+    # Substitute "e" with bullets since they are later used in partition_text
+    # to determine list element type.
+    paragraph = (re.sub(E_BULLET_PATTERN, "·", paragraph)).strip()
+
+    bullet_paras = re.split(UNICODE_BULLETS_RE, paragraph)
+    for bullet in bullet_paras:
+        if bullet:
+            clean_paragraphs.append(re.sub(PARAGRAPH_PATTERN, " ", bullet))
+    return clean_paragraphs
+
 def merge_hyphenated_words(text):
     """
     Merges incorrectly hyphenated words in a given text.

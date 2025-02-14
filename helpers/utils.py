@@ -16,15 +16,21 @@ from llama_index.embeddings.cohere import CohereEmbedding
 #from llama_index.embeddings.fastembed import FastEmbedEmbedding
 from llama_index.llms.cohere import Cohere
 #from llama_index.llms.openai import OpenAI
-#from llama_index.llms.mistralai import MistralAI
+from llama_index.llms.mistralai import MistralAI
+from llama_index.embeddings.mistralai import MistralAIEmbedding
 
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 
 import os
 
-CO_API_KEY = os.environ['CO_API_KEY'] or getpass("Enter your Cohere API key: ")
-Settings.llm = Cohere(model="command-r-plus", api_key=CO_API_KEY)
-Settings.embed_model = CohereEmbedding(model_name="embed-english-v3.0", api_key=CO_API_KEY)
+#CO_API_KEY = os.environ['CO_API_KEY'] or getpass("Enter your Cohere API key: ")
+#Settings.llm = Cohere(model="command-r-plus", api_key=CO_API_KEY)
+#Settings.embed_model = CohereEmbedding(model_name="embed-english-v3.0", api_key=CO_API_KEY)
+
+MISTRAL_API_KEY = os.environ['MISTRAL_API_KEY'] or getpass("Enter your Cohere API key: ")
+Settings.llm = MistralAI(model="mistral-small-latest", api_key=MISTRAL_API_KEY)
+Settings.embed_model = MistralAIEmbedding(model_name="mistral-embed", api_key=MISTRAL_API_KEY)
+
 
 def setup_llm(provider, model, api_key, **kwargs):
     """
@@ -55,10 +61,10 @@ def setup_embed_model(provider, **kwargs):
         Settings.embed_model = CohereEmbedding(model_name="embed-english-v3.0", **kwargs)
     elif provider == "openai":
         Settings.embed_model = OpenAIEmbedding(model_name="text-embedding-3-large", **kwargs)
-    elif provider == "fastembed":
-        Settings.embed_model = FastEmbedEmbedding(model_name="BAAI/bge-base-en-v1.5", **kwargs)
+    elif provider == "mistral":
+        Settings.embed_model = MistralAIEmbedding(model_name="mistral-embed", **kwargs)
     else:
-        raise ValueError(f"Invalid provider: {provider}. Pick one of 'cohere', 'fastembed', or 'openai'.")
+        raise ValueError(f"Invalid provider: {provider}. Pick one of 'cohere', 'mistral', or 'openai'.")
 
 def setup_vector_store(qdrant_url, qdrant_api_key, collection_name, enable_hybrid=False):
     """
