@@ -20,6 +20,9 @@ from llama_index.llms.mistralai import MistralAI
 from llama_index.embeddings.mistralai import MistralAIEmbedding
 
 from llama_index.vector_stores.qdrant import QdrantVectorStore
+import os
+
+CO_API_KEY = os.environ['CO_API_KEY']
 
 def setup_llm(provider, model, api_key, **kwargs):
     """
@@ -29,15 +32,19 @@ def setup_llm(provider, model, api_key, **kwargs):
     - api_key (str): The API key for authenticating with the LLM service.
     - model (str): The model identifier for the LLM service.
     """
+
+    #print(f"DEBUG: LLM provider {provider}")
         
     if provider == "cohere":
         Settings.llm = Cohere(model=model, api_key=api_key, **kwargs)
     elif provider == "openai":
         Settings.llm = OpenAI(model=model, api_key=api_key, **kwargs)
     elif provider == "mistral":
+        #print(f"DEBUG: LLM provider mistral")
         Settings.llm = MistralAI(model=model, api_key=api_key, **kwargs)
     else:
         raise ValueError(f"Invalid provider: {provider}. Pick one of 'cohere', 'openai', or 'mistral'.")
+    #print(f"DEBUG: LLM provider {Settings.llm}")
 
 def setup_embed_model(provider, **kwargs):
     """
@@ -46,17 +53,21 @@ def setup_embed_model(provider, **kwargs):
     Parameters:
     - model_name (str): The model identifier for the embedding service.
     """
+
+    #print(f"DEBUG: embed provider {provider}")
+
     if provider == "cohere":
         Settings.embed_model = CohereEmbedding(model_name="embed-english-v3.0", **kwargs)
     #elif provider == "openai":
     #    Settings.embed_model = OpenAIEmbedding(model_name="text-embedding-3-large", **kwargs)
     elif provider == "mistral":
+        #print(f"DEBUG: embed provider mistral")
         Settings.embed_model = MistralAIEmbedding(model_name="mistral-embed", **kwargs)
     else:
         raise ValueError(f"Invalid provider: {provider}. Pick one of 'cohere', 'mistral', or 'openai'.")
-    #print(f"embed model {Settings.embed_model}")
+    #print(f"DEBUG: embed model {Settings.embed_model}")
 
-#setup_embed_model(provder="mistral",api_key="vz3rkFPUhygZnFmLWn6yCkXj2xpRCwVM")
+setup_embed_model(provider="cohere",api_key=CO_API_KEY) # calling to override LlamaIndex's default use of OpenAI embedding
 
 def setup_vector_store(qdrant_url, qdrant_api_key, collection_name, enable_hybrid=False):
     """
