@@ -3,6 +3,6 @@
     "search.useGlobalIgnoreFiles": false,
     "python.analysis.extraPaths": [
         "./helpers",
-        "./helpers"
-    ]
+    ],
+    "python.defaultInterpreterPath": "/opt/conda/envs/llama_index/bin/python"
 }
